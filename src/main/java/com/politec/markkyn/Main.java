@@ -1,29 +1,44 @@
 package com.politec.markkyn;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
+import java.util.List;
 
 
 public class Main {
     public static void main(String[] args) {
-        File malwareFolder =  new File("/malwares");
+        File yaraExecutable = new File("./bin/yara64.exe");
+        File malwareFolder =  new File("./malwares");
+        File rulesFolder = new File("./rules");
 
-        ProcessBuilder builder = new ProcessBuilder("./bin/yara.exe");
+        //listAllFiles(malwareFolder);
+
+        ProcessBuilder builder = new ProcessBuilder(yaraExecutable.getPath());
 
         try {
-            builder.start();
+            Process process = builder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+
+            while((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
         } catch (java.io.IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
-
-    private void listAllFiles(final File folder) {
+    public static void listAllFiles(final File folder) {
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
                 listAllFiles(fileEntry);
             }
-
-
         }
     }
 }
